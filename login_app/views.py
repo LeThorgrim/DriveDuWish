@@ -1,23 +1,25 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username')
+        password = request.POST.get('password')
         
         # Authenticate the user
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
             login(request, user)  # Log the user in
-            return redirect('index')  # Redirect to the index page
+            print("login successful")
+            return redirect('index')  # Ensure this name matches the index route
         else:
             messages.error(request, 'Invalid username or password.')
+            print("login failed")
 
     return render(request, 'login.html')
 
 def logout_view(request):
     logout(request)  # Log the user out
-    return redirect('login')  # Redirect to login page after logout
+    return redirect('login')  # Redirect to the login page
