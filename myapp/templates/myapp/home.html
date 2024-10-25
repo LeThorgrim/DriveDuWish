@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drive</title>
+    <meta name="description" content="DriveDuWish">
+    <meta name="keywords" content="Drive">
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+    
+    
+</head>
+<body>
+    <header>
+        <h1>Drive</h1>
+        <nav>
+            <a href="#">Se connecter</a>
+        </nav>
+    </header>
+    <div class="sidebar">
+        <div class="profile">
+            <img src="/media/pp.jpg" alt="Photo de profil" class="profile-img" height="100" width="100">
+            <h2 class="username">Nom de l'utilisateur</h2>
+        </div>
+        <nav class="menu">
+            <a href="#" id="upload" class="menu-item">Upload</a>
+            <a href="#" id="mon-drive" class="menu-item">Mon Drive</a>
+            <a href="#" id="recents" class="menu-item">Récents</a>
+            <a href="#" id="statistiques" class="menu-item">Statistiques</a>
+        </nav>
+    </div>
+    <div class="content">
+        <div id="content-home" class="content-section">
+            <h2>Accueil</h2>
+            <p>Contenu pour l'accueil.</p>
+            </div>  
+        <div id="content-upload" class="content-section">
+            <h2>Upload</h2>
+            <h3>Télécharger des fichiers</h3>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %} 
+                {{ form.as_p }}
+
+            </br>
+                <button type="submit">Ajouter le fichier</button>
+            </form>
+        </div>
+        <div id="content-mon-drive" class="content-section">
+            <h2>Mon Drive</h2>
+            <p>Contenu pour Mon Drive.</p>
+        </div>
+        <div id="content-recents" class="content-section">
+            <h2>Récents</h2>
+            <h3>Fichiers téléchargés :</h3>
+            <ul>
+                {% for file in files %}
+                    <li>
+                        <strong>{{ file.title }}</strong>: 
+                        <a href="{{ file.file.url }}">{{ file.file.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div id="content-statistiques" class="content-section">
+            <h2>Statistiques</h2>
+            <p>Contenu pour les statistiques.</p>
+        </div>
+    </div>
+
+    <script src="{% static 'home.js' %}"></script>
+
+</body>
+</html>
