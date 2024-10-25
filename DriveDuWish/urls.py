@@ -25,3 +25,4 @@ urlpatterns = [
     path('', include('login_app.urls')),        # Include login app URLs
     path('main', include('myapp.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

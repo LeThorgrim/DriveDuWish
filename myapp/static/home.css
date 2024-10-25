@@ -81,3 +81,48 @@ h1 {
 .content-section.active {
     display: block;
 }
+
+/* Conteneur de la section des dossiers et fichiers */
+.folders-container, .files-container {
+    margin: 20px 0;
+}
+
+/* Affichage des dossiers en ligne */
+.folders, .files {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Style pour chaque dossier */
+.folder, .file {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100px;
+}
+
+/* Icône de dossier et de fichier */
+.folder-icon, .file-icon {
+    width: 64px;
+    height: 64px;
+}
+
+/* Textes */
+.folder span, .file a {
+    margin-top: 10px;
+    color: #333;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.file a:hover {
+    color: #007bff; /* Couleur au survol */
+}
+
+/* Quelques animations au survol */
+.folder:hover, .file:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s;
+}

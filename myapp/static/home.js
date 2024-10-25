@@ -24,3 +24,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+    const folders = document.querySelectorAll('.folder');
+
+    folders.forEach(folder => {
+        folder.addEventListener('click', function() {
+            alert(`Ouvrir le dossier: ${folder.querySelector('span').textContent}`);
+            // Ajoutez ici la logique pour charger le contenu du dossier cliqué
+        });
+    });
+});
