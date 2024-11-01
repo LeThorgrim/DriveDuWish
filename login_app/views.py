@@ -15,7 +15,7 @@ def login_view(request):
         if user is not None:
             login(request, user)  # Log the user in
             print("login successful")
-            return redirect('main')  # Ensure this name matches the index route
+            return redirect('/main')  # Ensure this name matches the index route
         else:
             messages.error(request, 'Invalid username or password.')
             print("login failed")
