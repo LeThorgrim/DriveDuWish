@@ -34,33 +34,61 @@
         <div id="content-home" class="content-section">
             <h2>Accueil</h2>
             <p>Contenu pour l'accueil.</p>
-            </div>  
+        </div>
         <div id="content-upload" class="content-section">
             <h2>Upload</h2>
             <h3>Télécharger des fichiers</h3>
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %} 
-                {{ form.as_p }}
-
-            </br>
-                <button type="submit">Ajouter le fichier</button>
+            <form method="post" enctype="multipart/form-data" action="{% url 'upload_file' %}">
+                {% csrf_token %}
+                {{ file_form.as_p }}
+                <button type="submit" name="add_file">Ajouter le fichier</button>
+            </form>
+            <h3>Créer un dossier</h3>
+            <form method="post" action="{% url 'upload_file' %}">
+                {% csrf_token %}
+                {{ folder_form.as_p }}
+                <button type="submit" name="add_folder">Ajouter le dossier</button>
             </form>
         </div>
         <div id="content-mon-drive" class="content-section">
             <h2>Mon Drive</h2>
-            <p>Contenu pour Mon Drive.</p>
+            
+            <!-- Afficher les dossiers -->
+            <div class="folders-container">
+                <h3>Dossiers :</h3>
+                <div class="folders">
+                    {% for folder in folders %}
+                        <div class="folder">
+                            <a href="{% url 'view_folder' folder.id %}">{{ folder.name }}</a>
+                            <a href="#" onclick="confirmDeleteFolder({{ folder.id }})">Supprimer</a>
+                        </div>
+                    {% empty %}
+                        <p>Aucun dossier disponible</p>
+                    {% endfor %}
+                </div>
+            </div>
+        
+            <!-- Afficher les fichiers -->
+            <div class="files-container">
+                <h3>Fichiers :</h3>
+                <div class="files">
+                    {% for file in files %}
+                        <div class="file">
+                            <a href="{{ file.file.url }}">{{ file.title }}</a>
+                            {% if file.folder %}
+                                (Dossier: {{ file.folder.name }})
+                            {% endif %}
+                            <a href="{% url 'delete_file' file.id %}">Supprimer</a>
+                        </div>
+                    {% empty %}
+                        <p>Aucun fichier disponible</p>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
         <div id="content-recents" class="content-section">
             <h2>Récents</h2>
-            <h3>Fichiers téléchargés :</h3>
-            <ul>
-                {% for file in files %}
-                    <li>
-                        <strong>{{ file.title }}</strong>: 
-                        <a href="{{ file.file.url }}">{{ file.file.name }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
+            <p>Contenu pour les fichiers récents.</p>
         </div>
         <div id="content-statistiques" class="content-section">
             <h2>Statistiques</h2>
@@ -69,6 +97,12 @@
     </div>
 
     <script src="{% static 'home.js' %}"></script>
-
+    <script>
+        function confirmDeleteFolder(folderId) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer ce dossier et tout son contenu ?")) {
+                window.location.href = "{% url 'delete_folder' 0 %}".replace('0', folderId);
+            }
+        }
+    </script>
 </body>
 </html>

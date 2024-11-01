@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ folder.name }}</title>
+    <meta name="description" content="Contenu du dossier {{ folder.name }}">
+    <meta name="keywords" content="Google Drive, HTML, CSS, Démonstration">
+<link rel="stylesheet" href="{% static 'home.css' %}">
+</head>
+<body>
+    <header>
+        <h1>{{ folder.name }}</h1>
+        <nav>
+            <a href="{% url 'upload_file' %}">Retour</a>
+        </nav>
+    </header>
+    <div class="content">
+        <h2>Sous-dossiers</h2>
+        <ul>
+            {% for subfolder in subfolders %}
+                <li>
+                    <a href="{% url 'view_folder' subfolder.id %}">{{ subfolder.name }}</a>
+                    <a href="{% url 'delete_folder' subfolder.id %}">Supprimer</a>
+                </li>
+            {% empty %}
+                <li>Aucun sous-dossier disponible</li>
+            {% endfor %}
+        </ul>
+        <h2>Fichiers</h2>
+        <ul>
+            {% for file in files %}
+                <li>
+                    <a href="{{ file.file.url }}">{{ file.title }}</a>
+                    <a href="{% url 'delete_file' file.id %}">Supprimer</a>
+                </li>
+            {% empty %}
+                <li>Aucun fichier disponible</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <script src="{% static 'home.js' %}"></script>
+</body>
+</html>
