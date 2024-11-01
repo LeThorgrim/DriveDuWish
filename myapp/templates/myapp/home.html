@@ -21,13 +21,22 @@
     <div class="sidebar">
         <div class="profile">
             <img src="/media/pp.jpg" alt="Photo de profil" class="profile-img" height="100" width="100">
-            <h2 class="username">Nom de l'utilisateur</h2>
+            {% if user.is_authenticated %}
+            <h2 class="username">{{ user.username }}</h2>
+            {% else %}
+            <h2 class="username"> non connecté </h2>
+            {% endif %}
         </div>
         <nav class="menu">
             <a href="#" id="upload" class="menu-item">Upload</a>
             <a href="#" id="mon-drive" class="menu-item">Mon Drive</a>
             <a href="#" id="recents" class="menu-item">Récents</a>
             <a href="#" id="statistiques" class="menu-item">Statistiques</a>
+            {% if user.is_authenticated %}
+            <a href="#" id="logout" class="menu-item">Se Déconnecter</a>
+            {% else %}
+            <a href="#" id="logout" class="menu-item">Se Connecter</a>
+            {% endif %}
         </nav>
     </div>
     <div class="content">
@@ -93,6 +102,15 @@
         <div id="content-statistiques" class="content-section">
             <h2>Statistiques</h2>
             <p>Contenu pour les statistiques.</p>
+        </div>
+        <div id="content-logout" class="content-section">
+            {% if user.is_authenticated %}
+                <p>Bonjour, {{ user.username }}.</p>
+                <a href="{% url 'logout' %}" class="logButton">Logout</a>
+            {% else %}
+                <p>Vous n'êtes pas connecté!</p>
+                <a href="{% url 'login' %}" class="logButton">Login</a>
+            {% endif %}
         </div>
     </div>
 

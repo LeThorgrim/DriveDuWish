@@ -4,6 +4,9 @@ from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import MediaFileForm, FolderForm
 from .models import MediaFile, Folder
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib import messages
 
 def upload_file(request):
     if request.method == 'POST':
