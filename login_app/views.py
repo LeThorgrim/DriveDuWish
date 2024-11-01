@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
+from pathlib import Path
 
 def login_view(request):
     if request.method == 'POST':
@@ -14,7 +15,7 @@ def login_view(request):
         if user is not None:
             login(request, user)  # Log the user in
             print("login successful")
-            return redirect('index')  # Ensure this name matches the index route
+            return redirect('main')  # Ensure this name matches the index route
         else:
             messages.error(request, 'Invalid username or password.')
             print("login failed")
@@ -37,6 +38,7 @@ def register_view(request):
         else:
             User.objects.create_user(username=username, password=password)
             messages.success(request, f'Account created for {username}!')
+            Path(f'media/{username}').mkdir(parents=True, exist_ok=True)
             return redirect('login')
 
     return render(request, 'register.html')

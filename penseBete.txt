@@ -1,4 +1,0 @@
-C:\Python310\python.exe -m pip install --upgrade pip //MAJ python
-python -m pip install Django //django install
-
-python manage.py runserver //run
