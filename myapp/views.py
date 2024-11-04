@@ -33,12 +33,16 @@ def upload_file(request):
 
     folders = Folder.objects.filter(parent__isnull=True)  # Afficher uniquement les dossiers racine
     files = MediaFile.objects.filter(folder__isnull=True)  # Afficher uniquement les fichiers sans dossier
+    folder_count = Folder.objects.count()
+
     
+
     return render(request, 'myapp/home.html', {
         'file_form': file_form,
         'folder_form': folder_form,
         'folders': folders,
         'files': files,
+        'folder_count':folder_count,
     })
 
 def delete_file(request, file_id):
@@ -91,3 +95,6 @@ def view_folder(request, folder_id):
         'files': files,
         'subfolders': subfolders,
     })
+
+
+
