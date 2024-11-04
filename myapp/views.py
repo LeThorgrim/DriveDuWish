@@ -1,4 +1,5 @@
 import os
+import json
 import shutil
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
@@ -33,9 +34,17 @@ def upload_file(request):
 
     folders = Folder.objects.filter(parent__isnull=True)  # Afficher uniquement les dossiers racine
     files = MediaFile.objects.filter(folder__isnull=True)  # Afficher uniquement les fichiers sans dossier
-    folder_count = Folder.objects.count()
-
     
+    
+    #Statistiques
+    folder_count = Folder.objects.count()
+    folder_file_counts = []
+    for folder in Folder.objects.all():
+        folder_file_counts.append({
+            'folder_name': folder.name,
+            'file_count': MediaFile.objects.filter(folder=folder).count()
+        })
+        folder_file_counts_json=json.dumps(folder_file_counts)
 
     return render(request, 'myapp/home.html', {
         'file_form': file_form,
@@ -43,6 +52,8 @@ def upload_file(request):
         'folders': folders,
         'files': files,
         'folder_count':folder_count,
+        'folder_file_count':folder_file_counts,
+        'folder_file_counts_json':folder_file_counts_json
     })
 
 def delete_file(request, file_id):

@@ -103,7 +103,9 @@
         <div id="content-statistiques" class="content-section">
             <h2>Statistiques</h2>
             <p>Contenu pour les statistiques.</p>
+            <pre>{{ folder_file_counts|safe }}</pre>
             <canvas id="folderChart" width="400" height="400"></canvas>
+            <canvas id="fileChart" width="400"height="400"></canvas>
             
         </div>
         <script src="{% static 'home.js' %}"></script>
@@ -150,7 +152,45 @@
                 }
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var ctx2 = document.getElementById('fileChart').getContext('2d');
+            var folderFileCounts =  {{ folder_file_counts_json|safe }};
+            var folderNames = folderFileCounts.map(function (item) { return item.folder_name; });
+            var fileCounts = folderFileCounts.map(function (item) { return item.file_count; });
+            
+            
+            //var folderNames = ['Dossier 1', 'Dossier 2', 'Dossier 3'];
+            //var fileCounts = [5, 10, 3];
+
+            var chart = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: folderNames,
+                    datasets: [{
+                        label: 'Nombre de fichiers',
+                        data: fileCounts,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
     </script>
+
+    
+
+
+
+
 
    
     
