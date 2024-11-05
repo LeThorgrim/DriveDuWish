@@ -3,13 +3,14 @@ from django.contrib.auth.models import User
 import os
 
 def user_directory_path(instance, filename):
-    # Fonction pour envoyer les fichiers dans un dossier spécifique (ici celui de l'utilisateur)
+    # fonction pour définir le chemin de stockage des fichiers
     folder_path = instance.folder.get_full_path() if instance.folder else ''
     return os.path.join(instance.user.username, folder_path, filename)
 
 class Folder(models.Model):
     name = models.CharField(max_length=100)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)  
 
     def __str__(self):
         return self.name
