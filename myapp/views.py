@@ -8,6 +8,9 @@ from .models import MediaFile, Folder
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.db.models import Count
+from collections import Counter
+
 
 def upload_file(request):
     if request.method == 'POST':
@@ -46,6 +49,12 @@ def upload_file(request):
         })
         folder_file_counts_json=json.dumps(folder_file_counts)
 
+    all_files = MediaFile.objects.all()
+    file_types = [os.path.splitext(file.file.name)[1].lower() for file in all_files]
+    file_type_counts =dict(Counter(file_types))
+
+      
+
     return render(request, 'myapp/home.html', {
         'file_form': file_form,
         'folder_form': folder_form,
@@ -53,7 +62,9 @@ def upload_file(request):
         'files': files,
         'folder_count':folder_count,
         'folder_file_count':folder_file_counts,
-        'folder_file_counts_json':folder_file_counts_json
+        'folder_file_counts_json':folder_file_counts_json,
+        'file_type_counts':json.dumps(file_type_counts)
+        
     })
 
 def delete_file(request, file_id):
