@@ -78,10 +78,17 @@
                 <button type="submit" name="add_folder">Ajouter le dossier</button>
             </form>
         </div>
+
         <div id="content-mon-drive" class="content-section">
             <h2>Mon Drive</h2>
-            
-            <!-- Afficher les dossiers -->
+            <form method="get" action="{% url 'search_files' %}">
+                <input type="text" name="query" placeholder="Rechercher des fichiers" value="{{ query }}" required>
+                <button type="submit">Rechercher</button>
+                {% if query %}
+                    <a href="{% url 'mon_drive' %}" class="cancel-search-button">Annuler la recherche</a>
+                {% endif %}
+            </form>
+        
             <div class="folders-container">
                 <h3>Dossiers :</h3>
                 <div class="folders">
@@ -96,24 +103,26 @@
                 </div>
             </div>
         
-            <!-- Afficher les fichiers -->
             <div class="files-container">
-                <h3>Fichiers :</h3>
+                <h3>Fichiers hors dossiers :</h3>
                 <div class="files">
                     {% for file in files %}
                         <div class="file">
                             <a href="{{ file.file.url }}">{{ file.title }}</a>
+                        <!--saut de ligne-->
+                            <br>
                             {% if file.folder %}
                                 (Dossier: {{ file.folder.name }})
                             {% endif %}
-                            <a href="{% url 'delete_file' file.id %}">Supprimer</a>
+                            <a href="#" onclick="confirmDeleteFile({{ file.id }})">Supprimer</a>
                         </div>
                     {% empty %}
                         <p>Aucun fichier disponible</p>
                     {% endfor %}
                 </div>
-            </div>
+            </div>           
         </div>
+        
         <div id="content-recents" class="content-section">
             <h2>Récents</h2>
             <p>Contenu pour les fichiers récents.</p>
@@ -260,13 +269,5 @@
 
     </script>
 
-    
-
-
-
-
-
-   
-    
 </body>
 </html>

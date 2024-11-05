@@ -6,5 +6,7 @@ urlpatterns = [
     path('delete_file/<int:file_id>/', views.delete_file, name='delete_file'),
     path('delete_folder/<int:folder_id>/', views.delete_folder, name='delete_folder'),
     path('view_folder/<int:folder_id>/', views.view_folder, name='view_folder'),
+    path('search/', views.search_files, name='search_files'),
+    path('mon-drive/', views.mon_drive, name='mon_drive'),
     
 ]
