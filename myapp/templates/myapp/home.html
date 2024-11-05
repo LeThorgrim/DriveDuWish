@@ -10,7 +10,25 @@
     <link rel="stylesheet" href="{% static 'home.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    
+    <style>
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .chart-container canvas {
+            margin: 10px;
+            max-width: 45%;
+            height: auto;
+        }
+
+        .chart-row {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -104,11 +122,15 @@
             <h2>Statistiques</h2>
             <p>Contenu pour les statistiques.</p>
             <pre>{{ folder_file_counts|safe }}</pre>
-            <canvas id="folderChart" width="400" height="400"></canvas>
-            <canvas id="fileChart" width="400"height="400"></canvas>
-            <canvas id="fileTypeChart" </canvas>
-
-            
+            <div class="chart-container">
+                <div class="chart-row">
+                    <canvas id="folderChart" ></canvas>
+                    <canvas id="fileChart" ></canvas>
+                </div>
+                <div class="chart-row">
+                    <canvas id="fileTypeChart"></canvas>
+                </div>
+            </div>
         </div>
         <script src="{% static 'home.js' %}"></script>
 
@@ -227,6 +249,9 @@
                     }
                 }
             }
+
+
+           
         });
 
         

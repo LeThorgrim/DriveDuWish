@@ -52,6 +52,9 @@ def upload_file(request):
     all_files = MediaFile.objects.all()
     file_types = [os.path.splitext(file.file.name)[1].lower() for file in all_files]
     file_type_counts =dict(Counter(file_types))
+    
+    
+    
 
       
 
@@ -63,8 +66,8 @@ def upload_file(request):
         'folder_count':folder_count,
         'folder_file_count':folder_file_counts,
         'folder_file_counts_json':folder_file_counts_json,
-        'file_type_counts':json.dumps(file_type_counts)
-        
+        'file_type_counts':json.dumps(file_type_counts),
+    
     })
 
 def delete_file(request, file_id):
