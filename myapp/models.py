@@ -1,6 +1,11 @@
-# myapp/models.py
 from django.db import models
+from django.contrib.auth.models import User
 import os
+
+def user_directory_path(instance, filename):
+    # Fonction pour envoyer les fichiers dans un dossier spécifique (ici celui de l'utilisateur)
+    folder_path = instance.folder.get_full_path() if instance.folder else ''
+    return os.path.join(instance.user.username, folder_path, filename)
 
 class Folder(models.Model):
     name = models.CharField(max_length=100)
@@ -18,8 +23,9 @@ class Folder(models.Model):
         return self.name
 
 class MediaFile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)  # Relier au modèle User de login_app
     title = models.CharField(max_length=100)
-    file = models.FileField(upload_to='uploads/')
+    file = models.FileField(upload_to=user_directory_path)
     folder = models.ForeignKey(Folder, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):

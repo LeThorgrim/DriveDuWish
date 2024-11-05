@@ -1,59 +1,51 @@
 import os
-import json
 import shutil
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from .forms import MediaFileForm, FolderForm
 from .models import MediaFile, Folder
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.contrib import messages
 
 def upload_file(request):
     if request.method == 'POST':
         file_form = MediaFileForm(request.POST, request.FILES)
         folder_form = FolderForm(request.POST)
         
+        user_folder_path = os.path.join(settings.MEDIA_ROOT, request.user.username)
+        os.makedirs(user_folder_path, exist_ok=True)
+
         if 'add_file' in request.POST and file_form.is_valid():
             file_instance = file_form.save(commit=False)
-            # Mettre le fichier dans le bon dossier s'il est sélectionné
+            file_instance.user = request.user  # Associer le fichier à l'utilisateur connecté
+            # Si le fichier est ajouté dans un dossier
             if file_instance.folder:
                 folder_path = file_instance.folder.get_full_path()
-                file_instance.file.name = os.path.join(folder_path, file_instance.file.name)
+                file_instance.file.name = os.path.join(request.user.username, folder_path, file_instance.file.name)
+            else:
+                file_instance.file.name = os.path.join(request.user.username, file_instance.file.name)
             file_instance.save()
             return redirect('upload_file')
 
         if 'add_folder' in request.POST and folder_form.is_valid():
-            new_folder = folder_form.save()
-            create_physical_folder(new_folder)  # Crée le dossier physique
+            folder_instance = folder_form.save(commit=False)
+            folder_instance.save()
+            # Créer un dossier physique pour le dossier
+            os.makedirs(os.path.join(user_folder_path, folder_instance.get_full_path()), exist_ok=True)
             return redirect('upload_file')
 
     else:
         file_form = MediaFileForm()
         folder_form = FolderForm()
 
-    folders = Folder.objects.filter(parent__isnull=True)  # Afficher uniquement les dossiers racine
-    files = MediaFile.objects.filter(folder__isnull=True)  # Afficher uniquement les fichiers sans dossier
-    
-    
-    #Statistiques
-    folder_count = Folder.objects.count()
-    folder_file_counts = []
-    for folder in Folder.objects.all():
-        folder_file_counts.append({
-            'folder_name': folder.name,
-            'file_count': MediaFile.objects.filter(folder=folder).count()
-        })
-        folder_file_counts_json=json.dumps(folder_file_counts)
+    # ici on récupère les fichiers et dossiers de l'utilisateur et uniquement ceux de l'utilisateur
+    user_folders = Folder.objects.filter(parent__isnull=True)
+    user_files = MediaFile.objects.filter(folder__isnull=True)
 
     return render(request, 'myapp/home.html', {
         'file_form': file_form,
         'folder_form': folder_form,
-        'folders': folders,
-        'files': files,
-        'folder_count':folder_count,
-        'folder_file_count':folder_file_counts,
-        'folder_file_counts_json':folder_file_counts_json
+        'folders': user_folders,
+        'files': user_files,
     })
 
 def delete_file(request, file_id):
@@ -106,6 +98,3 @@ def view_folder(request, folder_id):
         'files': files,
         'subfolders': subfolders,
     })
-
-
-
