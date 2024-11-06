@@ -328,12 +328,12 @@
         <div id="content-logout" class="content-section">
             {% if user.is_authenticated %}
                 <p>Bonjour, {{ user.username }}.</p>
-                <a href="{% url 'logout' %}" class="logButton">Logout</a>
+                <a href="{% url 'logout' %}" class="logButton">Se Déconnecter</a>
                 <p>Voulez vous supprimer votre compte ?</p>
-                <a href="{% url 'delete' %}" class="logButton">Delete</a>
+                <a href="{% url 'delete' %}" class="logButton">Supprimer Mon Compte</a>
             {% else %}
                 <p>Vous n'êtes pas connecté!</p>
-                <a href="{% url 'login' %}" class="logButton">Login</a>
+                <a href="{% url 'login' %}" class="logButton">Se Connecter</a>
             {% endif %}
         </div>
     </div>
