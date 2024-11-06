@@ -169,7 +169,7 @@
                             <img src="/media/folder.png" alt="{{ folder.name }}" class="folder-icon" height="32" width="32">
                             {{ folder.name }}
                         </a>
-                        <a href="#" class="btn-supp" onclick="confirmDeleteFolder({{ folder.id }})">❌</a>
+                        <a class="btn-supp" href="{% url 'delete_folder' folder.id %}">❌</a>
                     </div>
                     {% empty %}
                         <p>Aucun dossier disponible</p>
@@ -189,7 +189,7 @@
                             {% if file.folder %}
                                 (Dossier: {{ file.folder.name }})
                             {% endif %}
-                            <a href="#" onclick="confirmDeleteFile({{ file.id }})" class="btn-supp">❌</a>
+                            <a href="{% url 'delete_file' file.id %}" class="btn-supp">❌</a>
                         </div>
                     {% empty %}
                         <p>Aucun fichier disponible</p>
