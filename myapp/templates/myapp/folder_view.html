@@ -211,7 +211,7 @@
         event.preventDefault();
         var fileId = event.dataTransfer.getData("file_id");
         var folderId = event.target.closest('.folder').getAttribute("data-folder-id");
-        fetch("{% url 'move_file' %}", {
+        fetch("{% url 'move_file_to_folder' %}", {
             method: 'POST',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
