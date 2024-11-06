@@ -55,7 +55,7 @@
 </head>
 <body>
     <div class="login-container">
-        <h2>Register</h2>
+        <h2>Inscription</h2>
 
         {% if messages %}
             {% for message in messages %}
@@ -65,16 +65,16 @@
 
         <form method="post">
             {% csrf_token %}
-            <label for="username">Username:</label>
+            <label for="username">Nom d'utilisateur:</label>
             <input type="text" name="username" id="username" required>
             <br>
-            <label for="password">Password:</label>
+            <label for="password">Mot de passe:</label>
             <input type="password" name="password" id="password" required>
             <br>
-            <button type="submit">Register</button>
+            <button type="submit">M'INSCRIRE</button>
         </form>
 
-        <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+        <p>Vous avez un compte? <a href="{% url 'login' %}">Se connecter</a></p>
     </div>
 </body>
 </html>

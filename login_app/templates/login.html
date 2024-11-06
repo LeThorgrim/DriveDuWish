@@ -56,7 +56,7 @@
 
     <div class="login-container">
         {% if not request.user.is_authenticated %}
-            <h2>Login</h2>
+            <h2>Connexion</h2>
 
             {% if messages %}
                 {% for message in messages %}
@@ -66,21 +66,25 @@
 
             <form method="post">
                 {% csrf_token %}
-                <label for="username">Username:</label>
+                <label for="username">Nom d'utilisateur:</label>
                 <input type="text" name="username" id="username">
                 <br>
-                <label for="password">Password:</label>
+                <label for="password">Mot de passe:</label>
                 <input type="password" name="password" id="password">
                 <br>
-                <button type="submit">Login</button>
+                <p></p>
+                <button type="submit">ME CONNECTER</button>
             </form>
 
-            <p>You don't have an account ? <a href="{% url 'register' %}">Register</a></p>
+            <p>Pas de compte ? <a href="{% url 'register' %}">S'inscrire</a></p>
             
         {% else %}
-            <h2>Login</h2>
-            <p>You're already connected!</p>
-            <a href="/logout/" class="logout-btn">Logout</a>
+            <h2>Connexion</h2>
+            <p>Vous êtes déjà connecté!</p>
+            <p></p>
+            <a href="/main" class="logout-btn">MON DRIVE</a>
+            <p></p>
+            <a href="/logout/" class="logout-btn">ME DECONNECTER</a>
         {% endif %}
     </div>
 
