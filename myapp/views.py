@@ -11,6 +11,8 @@ from django.contrib import messages
 from django.db.models import Count
 from collections import Counter
 from django.db.models import Q # Pour les requêtes de recherche
+import json
+
 
 
 #Création de dossier et fichiers/Upload de fichiers
@@ -68,6 +70,15 @@ def upload_file(request):
     file_types = [os.path.splitext(file.file.name)[1].lower() for file in all_files]
     file_type_counts =dict(Counter(file_types))
     
+    folder_count = Folder.objects.count()
+    folder_file_counts = []
+    for folder in Folder.objects.all():
+        folder_file_counts.append({
+            'folder_name': folder.name,
+            'file_count': MediaFile.objects.filter(folder=folder).count()
+        })
+        folder_file_counts_json=json.dumps(folder_file_counts)
+
     
     
 
@@ -79,10 +90,10 @@ def upload_file(request):
         #ancien main
         #'folders': folders,
         #'files': files,
-        #'folder_count':folder_count,
+        'folder_count':folder_count,
         #'folder_file_count':folder_file_counts,
-        #'folder_file_counts_json':folder_file_counts_json,
-        #'file_type_counts':json.dumps(file_type_counts),
+        'folder_file_counts_json':folder_file_counts_json,
+        'file_type_counts':json.dumps(file_type_counts),
         #merge flo 6/11 00:30
         'folders': user_folders,
         'files': user_files,
