@@ -154,6 +154,8 @@
             {% if user.is_authenticated %}
                 <p>Bonjour, {{ user.username }}.</p>
                 <a href="{% url 'logout' %}" class="logButton">Logout</a>
+                <p>Voulez vous supprimer votre compte ?</p>
+                <a href="{% url 'delete' %}" class="logButton">Delete</a>
             {% else %}
                 <p>Vous n'êtes pas connecté!</p>
                 <a href="{% url 'login' %}" class="logButton">Login</a>
@@ -178,7 +180,7 @@
                 labels: ['Nombre de dossiers'],
                 datasets: [{
                     label: 'Total des dossiers',
-                    data: [{{ folder_count }}],  // Valeur de `folder_count` transmise depuis Django
+                    data: [{{ folder_count }}],  
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 1
