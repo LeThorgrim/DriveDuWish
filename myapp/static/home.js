@@ -35,3 +35,59 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
+
+
+
+//drag and drop
+function drag(event) {
+    event.dataTransfer.setData("file_id", event.target.getAttribute("data-file-id"));
+}
+
+function allowDrop(event) {
+    event.preventDefault();
+}
+
+function drop(event) {
+    event.preventDefault();
+    const fileId = event.dataTransfer.getData("file_id");
+    const folderId = event.target.closest('.folder').getAttribute("data-folder-id");
+
+    // Vérifiez si fileId et folderId sont définis correctement
+    console.log("Dragging File ID:", fileId, "to Folder ID:", folderId);
+
+    if (fileId && folderId) {
+        fetch("{% url 'move_file_to_folder' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `file_id=${fileId}&folder_id=${folderId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Mettre à jour l'interface après le succès
+                const fileElement = document.querySelector(`[data-file-id="${fileId}"]`);
+                const targetFolder = document.querySelector(`[data-folder-id="${folderId}"] .folder-contents`);
+
+                if (fileElement && targetFolder) {
+                    targetFolder.appendChild(fileElement);
+                }
+            } else {
+                console.error(data.message);
+            }
+        })
+        .catch(error => console.error('Erreur:', error));
+    } else {
+        console.error("fileId ou folderId est manquant.");
+    }
+}
+
+
+
+document.querySelectorAll('.folder').forEach(folder => {
+    folder.addEventListener('dragenter', () => folder.classList.add('drag-over'));
+    folder.addEventListener('dragleave', () => folder.classList.remove('drag-over'));
+});
+
