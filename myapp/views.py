@@ -40,6 +40,18 @@ def upload_file(request):
                 for f in files:
                     fp = os.path.join(path, f)
                     folder_size += os.path.getsize(fp)
+
+            #if file_size exceeds, delete added file
+            file_size = os.path.getsize(os.path.join(settings.MEDIA_ROOT, file_instance.file.name))
+            if(file_size) > (40 * 1024 * 1024): #100mb folder limit
+                print("file size of '"+request.user.username+" exceeds the 40MB limit.")
+                messages.error(request, "Your file size exceeds the 40MB limit. The file was not uploaded.")
+                file_path = os.path.join(settings.MEDIA_ROOT, file_instance.file.name)
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                file_instance.delete()
+                return redirect('upload_file')
+                
             #if folder_size exceeds, delete added file
             if (folder_size) > (100 * 1024 * 1024): #100mb folder limit
                 print("folder size of '"+request.user.username+" exceeds the 100MB limit.")
@@ -86,12 +98,12 @@ def upload_file(request):
     file_types = [os.path.splitext(file.file.name)[1].lower() for file in user_files]
     file_type_counts=dict(Counter(file_types))
 
-
-    
-    
-    
-
-      
+    folder_size = 0
+    start_path = f"media/{request.user.username}"
+    for path, dirs, files in os.walk(start_path):
+        for f in files:
+            fp = os.path.join(path, f)
+            folder_size += os.path.getsize(fp)
 
     return render(request, 'myapp/home.html', {
         'file_form': file_form,
@@ -105,6 +117,7 @@ def upload_file(request):
         #merge flo 6/11 00:30
         'folders': user_folders,
         'files': user_files,
+        'sizeMb':round(folder_size/(1024*1024),2)
     })
 
 def delete_file(request, file_id):

@@ -311,6 +311,9 @@
                     <canvas id="fileChart" ></canvas>
                 </div>
                 <div class="chart-row">
+                    <canvas id="sizeMbChart" ></canvas>
+                </div>
+                <div class="chart-row">
                     <canvas id="fileTypeChart"></canvas>
                 </div>
             </div>
@@ -367,6 +370,7 @@
             var folderFileCounts =  {{ folder_file_count|safe }};
             var folderNames = folderFileCounts.map(function (item) { return item.folder_name; });
             var fileCounts = folderFileCounts.map(function (item) { return item.file_count; });
+            var sizeMbjs = JSON.parse({{ sizeMb|safe }});
             
 
             var chart = new Chart(ctx2, {
@@ -389,6 +393,28 @@
                     }
                 }
             });
+        });
+
+        const ctx2bis = document.getElementById('sizeMbChart').getContext('2d');
+        const fileChartBis = new Chart(ctx2bis, {
+            type: 'bar',
+            data: {
+                labels: ['Poids du drive en Mo'],
+                datasets: [{
+                    label: 'Total des dossiers',
+                    data: [{{ sizeMbjs }}],  
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
         });
 
         var ctx3 = document.getElementById('fileTypeChart').getContext('2d');
