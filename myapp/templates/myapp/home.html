@@ -197,6 +197,9 @@
                 </div>
             </div>    
             <script>
+                const moveFileUrl = "{% url 'move_file_to_folder' %}"; 
+                console.log(moveFileUrl);
+
                 document.getElementById('file-upload-form').addEventListener('submit', function(event) {
                     event.preventDefault();
                     var formData = new FormData(this);
@@ -263,6 +266,7 @@
         
                 function drag(event) {
                     event.dataTransfer.setData("file_id", event.target.getAttribute("data-file-id"));
+                    
                 }
         
                 function allowDrop(event) {
@@ -270,10 +274,11 @@
                 }
         
                 function drop(event) {
+                    
                     event.preventDefault();
                     var fileId = event.dataTransfer.getData("file_id");
                     var folderId = event.target.closest('.folder').getAttribute("data-folder-id");
-                    fetch("{% url 'move_file' %}", {
+                    fetch(moveFileUrl, {
                         method: 'POST',
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',

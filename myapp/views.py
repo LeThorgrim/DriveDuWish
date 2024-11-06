@@ -236,7 +236,7 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
-def move_file(request):
+def move_file_to_folder(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         file_id = data.get('file_id')
