@@ -1,6 +1,7 @@
 # DriveDuWish
-DriveDuWish est une application web permettant aux utilisateurs de gérer leurs fichiers et dossiers sur un drive en ligne, avec des fonctionnalités d'authentification, de téléchargement, de navigation et de visualisation.
+DriveDuWish est une application web permettant aux utilisateurs de gérer leurs fichiers et dossiers sur un drive en ligne personnel, avec des fonctionnalités d'authentification, de téléchargement, de navigation et de visualisation.
 
+<br>
 
 # Cahier des charges de l'application
 
@@ -24,6 +25,8 @@ DriveDuWish est une application web permettant aux utilisateurs de gérer leurs 
 * Drag and drop pour déplacer les fichiers
   * Instable mais codé
 
+<br>
+
 # Comment lancer DriveDuWish ?
 
 ## Méthode 1 : docker 🐬
@@ -34,15 +37,37 @@ DriveDuWish est une application web permettant aux utilisateurs de gérer leurs 
 
 ### Tutoriel :
 Dans votre invite de commande tapez ces deux commandes depuis la racine de l'application :
->docker-compose build <br>
->docker-compose up
+```
+> docker-compose build
+> docker-compose up
+```
 
 Docker se chargera ensuite du reste et vous pourrez accéder à DriveDuWish depuis<br>
 >http://127.0.0.1:8000/<br>
 ou<br>
 >http://localhost:8000/
 
-### Par défaut il existe un compte user:admin | password:admin mais libre à vous d'en créer d'autres! 
+*Par défaut il existe un compte user:admin | password:admin mais libre à vous d'en créer d'autres!*
 
-## Méthode 2
+<br>
 
+## Méthode 2 : rustique 🔧
+
+### Ressources nécessaires :
+>Python <br>
+>SQLParse & Django <br>
+>Invite de Commande
+
+### Tutoriel :
+Dans votre invite de commande tapez ces deux commandes depuis la racine de l'application :
+```
+> python manage.py migrate
+> python manage.py runserver
+```
+
+Ainsi votre application Django se lancera et sera accessible aux mêmes adresses que la méthode 1 <br>
+>http://127.0.0.1:8000/<br>
+ou<br>
+>http://localhost:8000/
+
+*Par défaut il existe un compte user:admin | password:admin mais libre à vous d'en créer d'autres!*
