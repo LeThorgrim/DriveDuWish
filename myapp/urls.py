@@ -8,5 +8,6 @@ urlpatterns = [
     path('view_folder/<int:folder_id>/', views.view_folder, name='view_folder'),
     path('search/', views.search_files, name='search_files'),
     path('mon-drive/', views.mon_drive, name='mon_drive'),
+    path('move_file_to_folder/', views.move_file_to_folder, name='move_file_to_folder'),
     
 ]

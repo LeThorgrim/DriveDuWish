@@ -6,7 +6,7 @@ from django.contrib import messages
 from .forms import MediaFileForm, FolderForm
 from .models import MediaFile, Folder
 from django.db.models import Q # Pour les requêtes de recherche
-
+from django.http import JsonResponse
 
 #Création de dossier et fichiers/Upload de fichiers
 def upload_file(request):
@@ -54,6 +54,7 @@ def delete_file(request, file_id):
         os.remove(file_path)
     
     file_instance.delete()
+
     return redirect('upload_file')
 
 def delete_folder(request, folder_id):
@@ -130,3 +131,33 @@ def mon_drive(request):
         'folders': folders,
         'files': files,
     })
+
+
+def drag_and_drop(request):
+    if request.method == 'POST':
+        file_id = request.POST.get('file_id')
+        folder_id = request.POST.get('folder_id')
+        
+        file_instance = MediaFile.objects.get(id=file_id)
+        folder_instance = Folder.objects.get(id=folder_id)
+        
+        file_instance.folder = folder_instance
+        file_instance.save()
+    
+    return redirect('upload_file')
+
+from django.shortcuts import get_object_or_404
+
+
+def move_file_to_folder(request):
+    if request.method == 'POST':
+        file_id = request.POST.get('file_id')
+        folder_id = request.POST.get('folder_id')
+        
+        file_instance = MediaFile.objects.get(id=file_id)
+        folder_instance = Folder.objects.get(id=folder_id)
+        
+        file_instance.folder = folder_instance
+        file_instance.save()
+    
+    return redirect('upload_file')

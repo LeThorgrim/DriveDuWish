@@ -127,33 +127,3 @@ h1 {
     transition: transform 0.2s;
 }
 
-/* Style pour le bouton */
-.cancel-search-button {
-    color: #fff;
-    background-color: #ff6666;
-    padding: 5px 10px;
-    border-radius: 5px;
-    text-decoration: none;
-    margin-left: 10px;
-}
-
-.cancel-search-button:hover {
-    background-color: #ff4d4d;
-}
-
-.folder-name {
-    font-weight: bold;
-    color: #4A90E2;
-    text-decoration: none;
-    margin-left: 8px;
-    transition: color 0.3s;
-}
-
-.folder-name:hover {
-    color: #007BFF;
-}
-
-/* Ajout d'un style temporaire pour tester */
-.folder-name {
-    background-color: yellow; /* Temporaire pour test */
-}
