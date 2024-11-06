@@ -98,6 +98,11 @@ def view_folder(request, folder_id):
         'subfolders': subfolders,
     })
 
+def view_file(request, file_id):
+    file_instance = get_object_or_404(MediaFile, id=file_id, user=request.user)
+    return render(request, 'myapp/file_view.html', {
+        'file': file_instance,
+    })
 
 #recherche de fichier
 def search_files(request):
@@ -119,18 +124,23 @@ def search_files(request):
         'query': query,
     })
 
-    
+
+
+
 def mon_drive(request):
-    # Ne récupérer que les fichiers qui ne sont pas dans des sous-dossiers
-    files = MediaFile.objects.filter(user=request.user, folder__isnull=True)
-    folders = Folder.objects.filter(user=request.user)
+    # Obtenir uniquement les dossiers racine de l'utilisateur (sans parent)
+    root_folders = Folder.objects.filter(user=request.user, parent__isnull=True)
+    
+    # Obtenir uniquement les fichiers qui ne sont pas dans un dossier
+    root_files = MediaFile.objects.filter(user=request.user, folder__isnull=True)
 
     return render(request, 'myapp/home.html', {
         'file_form': MediaFileForm(),
         'folder_form': FolderForm(),
-        'folders': folders,
-        'files': files,
+        'folders': root_folders,
+        'files': root_files,
     })
+
 
 
 def drag_and_drop(request):
@@ -149,15 +159,22 @@ def drag_and_drop(request):
 from django.shortcuts import get_object_or_404
 
 
-def move_file_to_folder(request):
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
+@csrf_exempt
+def move_file(request):
     if request.method == 'POST':
-        file_id = request.POST.get('file_id')
-        folder_id = request.POST.get('folder_id')
+        data = json.loads(request.body)
+        file_id = data.get('file_id')
+        folder_id = data.get('folder_id')
         
-        file_instance = MediaFile.objects.get(id=file_id)
-        folder_instance = Folder.objects.get(id=folder_id)
-        
+        if not file_id or not folder_id:
+            return JsonResponse({'success': False, 'error': 'Invalid file_id or folder_id'})
+
+        file_instance = get_object_or_404(MediaFile, id=file_id)
+        folder_instance = get_object_or_404(Folder, id=folder_id)
         file_instance.folder = folder_instance
         file_instance.save()
-    
-    return redirect('upload_file')
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})

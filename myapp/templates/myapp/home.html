@@ -64,9 +64,14 @@
             color: #007bff;
             font-weight: bold;
         }
-        
-        a:hover {
-            text-decoration: underline;
+
+
+        .btn-supp:hover {
+            -webkit-transform: scale(1.75); /* Safari and Chrome */
+            -moz-transform: scale(1.75); /* Firefox */
+            -ms-transform: scale(1.75); /* IE 9 */
+            -o-transform: scale(1.75); /* Opera */
+            transform: scale(1.75);
         }
         
     </style>
@@ -140,7 +145,7 @@
                             <img src="/media/folder.png" alt="{{ folder.name }}" class="folder-icon" height="32" width="32">
                             {{ folder.name }}
                         </a>
-                        <a href="#" onclick="confirmDeleteFolder({{ folder.id }})">Supprimer</a>
+                        <a href="#" class="btn-supp" onclick="confirmDeleteFolder({{ folder.id }})">❌</a>
                     </div>
                     {% empty %}
                         <p>Aucun dossier disponible</p>
@@ -160,7 +165,7 @@
                             {% if file.folder %}
                                 (Dossier: {{ file.folder.name }})
                             {% endif %}
-                            <a href="#" onclick="confirmDeleteFile({{ file.id }})">Supprimer</a>
+                            <a href="#" onclick="confirmDeleteFile({{ file.id }})" class="btn-supp">❌</a>
                         </div>
                     {% empty %}
                         <p>Aucun fichier disponible</p>
@@ -168,63 +173,103 @@
                 </div>
             </div>    
             <script>
+                document.getElementById('file-upload-form').addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    var formData = new FormData(this);
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    }).then(response => response.json()).then(data => {
+                        if (data.success) {
+                            location.reload();
+                        }
+                    });
+                });
+        
+                document.getElementById('folder-create-form').addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    var formData = new FormData(this);
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    }).then(response => response.json()).then(data => {
+                        if (data.success) {
+                            location.reload();
+                        }
+                    });
+                });
+        
                 function confirmDeleteFile(fileId) {
                     if (confirm("Êtes-vous sûr de vouloir supprimer ce fichier ?")) {
-                        window.location.href = "{% url 'delete_file' 0 %}".replace('0', fileId);
+                        fetch("{% url 'delete_file' 0 %}".replace('0', fileId), {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }
+                        }).then(response => response.json()).then(data => {
+                            if (data.success) {
+                                location.reload();
+                            }
+                        });
                     }
                 }
-
+        
+                function confirmDeleteFolder(folderId) {
+                    if (confirm("Êtes-vous sûr de vouloir supprimer ce dossier et tout son contenu ?")) {
+                        fetch("{% url 'delete_folder' 0 %}".replace('0', folderId), {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            }
+                        }).then(response => response.json()).then(data => {
+                            if (data.success) {
+                                location.reload();
+                            }
+                        });
+                    }
+                }
+        
                 function drag(event) {
                     event.dataTransfer.setData("file_id", event.target.getAttribute("data-file-id"));
                 }
-                
+        
                 function allowDrop(event) {
                     event.preventDefault();
                 }
-                
+        
                 function drop(event) {
                     event.preventDefault();
-                
-                    const fileId = event.dataTransfer.getData("file_id");
-                    const folderId = event.target.closest('.folder') ? event.target.closest('.folder').getAttribute("data-folder-id") : null;
-                    
-                    // Vérification pour s'assurer que fileId et folderId sont valides
-                    if (fileId && folderId) {
-                        fetch("{% url 'move_file_to_folder' %}", {
-                            method: "POST",
-                            headers: {
-                                "X-CSRFToken": "{{ csrf_token }}",
-                                "Content-Type": "application/x-www-form-urlencoded"
-                            },
-                            body: `file_id=${fileId}&folder_id=${folderId}`
+                    var fileId = event.dataTransfer.getData("file_id");
+                    var folderId = event.target.closest('.folder').getAttribute("data-folder-id");
+                    fetch("{% url 'move_file' %}", {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({
+                            file_id: fileId,
+                            folder_id: folderId
                         })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                // Mettre à jour l'interface après le succès
-                                const fileElement = document.querySelector(`[data-file-id="${fileId}"]`);
-                                const targetFolder = document.querySelector(`[data-folder-id="${folderId}"] .folder-contents`);
-                                if (fileElement && targetFolder) {
-                                    targetFolder.appendChild(fileElement);
-                                }
-                            } else {
-                                console.error(data.message);
-                            }
-                        })
-                        .catch(error => console.error('Erreur:', error));
-                    } else {
-                        console.error("fileId ou folderId est manquant.");
-                    }
+                    }).then(response => response.json()).then(data => {
+                        if (data.success) {
+                            location.reload();
+                        }
+                    });
                 }
-                
-                
-                
-                
-
-                document.querySelectorAll('.folder').forEach(folder => {
-                    folder.addEventListener('dragenter', () => folder.classList.add('drag-over'));
-                    folder.addEventListener('dragleave', () => folder.classList.remove('drag-over'));
-                });
+        
+                function previewFile(fileUrl) {
+                    var previewWindow = window.open(fileUrl, '_blank');
+                    previewWindow.focus();
+                }
                 </script>       
         </div>
         
