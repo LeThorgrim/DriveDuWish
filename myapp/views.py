@@ -17,6 +17,9 @@ import json
 
 #Création de dossier et fichiers/Upload de fichiers
 def upload_file(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "Your are not logged in!")
+        return redirect('login')
     if request.method == 'POST':
         file_form = MediaFileForm(request.POST, request.FILES)
         folder_form = FolderForm(request.POST)
