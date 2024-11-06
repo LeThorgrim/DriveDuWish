@@ -25,7 +25,27 @@ def upload_file(request):
     if 'add_file' in request.POST and file_form.is_valid():
             file_instance = file_form.save(commit=False)
             file_instance.user = request.user  # Associate the file with the logged-in user
+            #save
             file_instance.save()
+            #check folder size
+            folder_size = 0
+            start_path = f"media/{request.user.username}"
+            for path, dirs, files in os.walk(start_path):
+                for f in files:
+                    fp = os.path.join(path, f)
+                    folder_size += os.path.getsize(fp)
+            #if folder_size exceeds, delete added file
+            if (folder_size) > (100 * 1024 * 1024): #100mb folder limit
+                print("folder size of '"+request.user.username+" exceeds the 100MB limit.")
+                messages.error(request, "Your folder size exceeds the 100MB limit. The file was not uploaded.")
+                file_path = os.path.join(settings.MEDIA_ROOT, file_instance.file.name)
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                file_instance.delete()
+                return redirect('upload_file')
+            
+            print("folder size of '"+request.user.username+"':" + str(round(folder_size/(1024*1024),2)) + "MB")
+            messages.success(request, f"Your folder size is now {round(folder_size / (1024 * 1024), 2)} MB.")
             return redirect('upload_file')
 
     if 'add_folder' in request.POST and folder_form.is_valid():
@@ -56,12 +76,16 @@ def upload_file(request):
     return render(request, 'myapp/home.html', {
         'file_form': file_form,
         'folder_form': folder_form,
-        'folders': folders,
-        'files': files,
-        'folder_count':folder_count,
-        'folder_file_count':folder_file_counts,
-        'folder_file_counts_json':folder_file_counts_json,
-        'file_type_counts':json.dumps(file_type_counts),
+        #ancien main
+        #'folders': folders,
+        #'files': files,
+        #'folder_count':folder_count,
+        #'folder_file_count':folder_file_counts,
+        #'folder_file_counts_json':folder_file_counts_json,
+        #'file_type_counts':json.dumps(file_type_counts),
+        #merge flo 6/11 00:30
+        'folders': user_folders,
+        'files': user_files,
     })
 
 def delete_file(request, file_id):
@@ -148,3 +172,4 @@ def mon_drive(request):
         'folders': folders,
         'files': files,
     })
+

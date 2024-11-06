@@ -62,6 +62,13 @@
         <div id="content-home" class="content-section">
             <h2>Accueil</h2>
             <p>Contenu pour l'accueil.</p>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}">
+                    {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
         </div>
         <div id="content-upload" class="content-section">
             <h2>Upload</h2>
