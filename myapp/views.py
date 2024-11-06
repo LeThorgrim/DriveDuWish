@@ -35,7 +35,7 @@ def upload_file(request):
             file_instance.save()
             #check folder size
             folder_size = 0
-            start_path = f"media/{request.user.username}"
+            start_path = f"media/"+request.user.username
             for path, dirs, files in os.walk(start_path):
                 for f in files:
                     fp = os.path.join(path, f)
@@ -99,11 +99,13 @@ def upload_file(request):
     file_type_counts=dict(Counter(file_types))
 
     folder_size = 0
-    start_path = f"media/{request.user.username}"
+    start_path = f"media/"+request.user.username
     for path, dirs, files in os.walk(start_path):
         for f in files:
             fp = os.path.join(path, f)
             folder_size += os.path.getsize(fp)
+
+    sizeMb = round(folder_size/(1024*1024),2)
 
     return render(request, 'myapp/home.html', {
         'file_form': file_form,
@@ -117,7 +119,7 @@ def upload_file(request):
         #merge flo 6/11 00:30
         'folders': user_folders,
         'files': user_files,
-        'sizeMb':round(folder_size/(1024*1024),2)
+        'sizeMb':sizeMb,
     })
 
 def delete_file(request, file_id):
