@@ -69,6 +69,10 @@ def upload_file(request):
     # statistiques
     folder_count = Folder.objects.filter(user=request.user).count()
     folder_file_count=[]
+    folder_file_count.append({
+            'folder_name':"root",
+            'file_count':MediaFile.objects.filter(user=request.user).count()
+        })
     for folder in Folder.objects.filter(user=request.user):
         folder_file_count.append({
             'folder_name':folder.name,
