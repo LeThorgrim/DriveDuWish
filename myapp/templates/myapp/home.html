@@ -197,7 +197,7 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             var ctx2 = document.getElementById('fileChart').getContext('2d');
-            var folderFileCounts =  {{ folder_file_counts_json|safe }};
+            var folderFileCounts =  {{ folder_file_count|safe }};
             var folderNames = folderFileCounts.map(function (item) { return item.folder_name; });
             var fileCounts = folderFileCounts.map(function (item) { return item.file_count; });
             
