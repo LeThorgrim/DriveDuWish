@@ -8,11 +8,8 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
 # Copy requirements.txt and install dependencies
-RUN pip install asgiref==3.8.1\
-                Django==5.1.2\
-                sqlparse==0.5.1\
-                typing_extensions==4.12.2\
-                tzdata==2024.2
+RUN pip install Django==5.1.2\
+                sqlparse==0.5.1
 
 # Copy the Django project code
 COPY . /app/
